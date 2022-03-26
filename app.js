@@ -10,6 +10,10 @@ app.set('views', './views');
 //static('directory 이름')
 app.use(express.static('public'));
 
+app.get('/topic', function(req, res){
+  res.send(req.query.id + ' , ' + req.query.name);
+});
+
 //temp파일을 랜더링하여 웹 페이지로 전송
 app.get('/template', function(req, res){
   //res('file', {property & value})
