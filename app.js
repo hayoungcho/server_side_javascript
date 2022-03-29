@@ -1,7 +1,9 @@
 //root file, entry file..
 var express = require('express');
 var app = express();
+var bodyParser = require('body-parser')
 app.locals.pretty= true;
+app.use(bodyParser.urlencoded({ extended: false }))
 //Express 템플리트 렌더링(Jade > pug)
 app.set('view engine', 'pug');
 //jade파일의 디렉토리가 됨
@@ -10,10 +12,26 @@ app.set('views', './views');
 //static('directory 이름')
 app.use(express.static('public'));
 
-app.get('/topic', function(req, res){
-  res.send(req.query.id + ' , ' + req.query.name);
+//sementic url /:key
+app.get('/topic/:id', function(req, res){
+  var topics = [
+              'Javasciprt is ... ',
+              'Nodejs is ...',
+              'Exepres is ...'
+            ];
+  var output = `<a href="/topic?id=0">Javascript</a><br>
+            <a href="/topic?id=1">Nodejs</a><br>
+            <a href="/topic?id=2">Express</a><br>
+            ${topics[req.params.id]}
+  `;
+  //queryString일 때
+  // ${topics[req.query.id]}
+  res.send(output);
 });
 
+app.get('/topic/:id/:mode', function(req, res){
+  res.send(req.params.id +  ",  " + req.params.mode)
+});
 //temp파일을 랜더링하여 웹 페이지로 전송
 app.get('/template', function(req, res){
   //res('file', {property & value})
@@ -60,4 +78,17 @@ app.get('/login', function(req, res){
 //port number, call back function
 app.listen(3000, function(){
   console.log('connected 3000 port!');
+});
+
+//20220329
+app.get('/form', function(req, res){
+  res.render('form');
+});
+
+app.post('/form_receiver', function(req, res){
+// app.get('/form_receiver', function(req, res){
+  var title = req.body.title;
+  var description = req.body.description;
+
+  res.send(title + " , " + description);
 });
